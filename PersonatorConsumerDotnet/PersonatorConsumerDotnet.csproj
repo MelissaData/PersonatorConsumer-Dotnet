@@ -5,6 +5,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>PersonatorConsumerDotnet</AssemblyName>
+    <RootNamespace>PersonatorConsumerDotnet</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

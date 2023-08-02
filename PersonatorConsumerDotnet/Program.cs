@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Security.Cryptography;
 
-namespace PersonatorConsumer
+namespace PersonatorConsumerDotnet
 {
   static class Program
   {
@@ -107,7 +108,7 @@ namespace PersonatorConsumer
       // Print output
       Console.WriteLine("\n==================================== OUTPUT ====================================\n");
       
-      Console.WriteLine("API Call: "); 
+      Console.WriteLine("API Call: ");
       string APICall = Path.Combine(baseServiceUrl, requestQuery);
       for (int i = 0; i < APICall.Length; i += 70)
       {
@@ -159,7 +160,7 @@ namespace PersonatorConsumer
           Console.Write("State: ");
           inputState = Console.ReadLine();
 
-          Console.Write("Postal: ");
+          Console.Write("PostalCode: ");
           inputPostal = Console.ReadLine();
 
           Console.Write("Country: ");
@@ -214,7 +215,7 @@ namespace PersonatorConsumer
 
           if (string.IsNullOrEmpty(inputPostal))
           {
-            Console.Write("Postal: ");
+            Console.Write("PostalCode: ");
             inputPostal = Console.ReadLine();
           }
 
@@ -257,7 +258,7 @@ namespace PersonatorConsumer
         Console.WriteLine($"\t     Address Line 1: {inputAddressLine1}");
         Console.WriteLine($"\t               City: {inputCity}");
         Console.WriteLine($"\t              State: {inputState}");
-        Console.WriteLine($"\t        Postal Code: {inputPostal}");
+        Console.WriteLine($"\t         PostalCode: {inputPostal}");
         Console.WriteLine($"\t            Country: {inputCountry}");
         Console.WriteLine($"\t              Email: {inputEmail}");
         Console.WriteLine($"\t              Phone: {inputPhone}");

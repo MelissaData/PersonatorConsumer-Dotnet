@@ -19,7 +19,7 @@ param(
 # Modify this if you want to use 
 $CurrentPath = $PSScriptRoot
 Set-Location $CurrentPath
-$ProjectPath = "$CurrentPath\PersonatorConsumer"
+$ProjectPath = "$CurrentPath\PersonatorConsumerDotnet"
 $BuildPath = "$ProjectPath\Build"
 
 If (!(Test-Path $BuildPath)) {
@@ -48,13 +48,13 @@ if ([string]::IsNullOrEmpty($license)) {
 # Build project
 Write-Host "`n================================= BUILD PROJECT ================================"
 
-dotnet publish -f="net7.0" -c Release -o $BuildPath PersonatorConsumer\PersonatorConsumer.csproj
+dotnet publish -f="net7.0" -c Release -o $BuildPath PersonatorConsumerDotnet\PersonatorConsumerDotnet.csproj
 
 # Run project
 if ([string]::IsNullOrEmpty($fullname) -and [string]::IsNullOrEmpty($addressline1) -and [string]::IsNullOrEmpty($city) -and [string]::IsNullOrEmpty($state) -and [string]::IsNullOrEmpty($postal) -and [string]::IsNullOrEmpty($country) -and [string]::IsNullOrEmpty($email) -and [string]::IsNullOrEmpty($phone)) {
   echo $license
-  dotnet $BuildPath\PersonatorConsumer.dll --license $license 
+  dotnet $BuildPath\PersonatorConsumerDotnet.dll --license $license 
 }
 else {
-  dotnet $BuildPath\PersonatorConsumer.dll --license $license --fullname $fullname --addressline1 $addressline1 --city $city --state $state --postal $postal --country $country --email $email --phone $phone 
+  dotnet $BuildPath\PersonatorConsumerDotnet.dll --license $license --fullname $fullname --addressline1 $addressline1 --city $city --state $state --postal $postal --country $country --email $email --phone $phone 
 }

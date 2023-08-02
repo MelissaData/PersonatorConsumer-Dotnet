@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonatorConsumer", "PersonatorConsumer\PersonatorConsumer.csproj", "{AA866304-1EAC-4833-8C52-9E081F4987FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonatorConsumerDotnet", "PersonatorConsumerDotnet\PersonatorConsumerDotnet.csproj", "{F5ACA14C-A7FF-462B-A995-53F14B06B003}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA866304-1EAC-4833-8C52-9E081F4987FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA866304-1EAC-4833-8C52-9E081F4987FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA866304-1EAC-4833-8C52-9E081F4987FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA866304-1EAC-4833-8C52-9E081F4987FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5ACA14C-A7FF-462B-A995-53F14B06B003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5ACA14C-A7FF-462B-A995-53F14B06B003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5ACA14C-A7FF-462B-A995-53F14B06B003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5ACA14C-A7FF-462B-A995-53F14B06B003}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
