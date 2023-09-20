@@ -110,17 +110,13 @@ namespace PersonatorConsumerDotnet
       
       Console.WriteLine("API Call: ");
       string APICall = Path.Combine(baseServiceUrl, requestQuery);
-      for (int i = 0; i < APICall.Length; i += 70)
-      {
-        try
-        {
-          Console.WriteLine(APICall.Substring(i, 70));
-        }
-        catch
-        {
-          Console.WriteLine(APICall.Substring(i, APICall.Length - i));
-        }
-      }
+      Console.WriteLine(String.Join(
+                Environment.NewLine,
+                    Enumerable.Range(0, (int)Math.Ceiling((double)APICall.Length / 70 ))
+                    .Select(i => i * 70)
+                    .Select(i => APICall
+                    .Substring(i, Math.Min(70, APICall.Length - i)))
+                ));
 
       Console.WriteLine("\nAPI Response:");
       Console.WriteLine(prettyResponse);
