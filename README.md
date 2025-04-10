@@ -11,14 +11,11 @@ For further documentation, please visit: https://docs.melissa.com/cloud-api/pers
 
 The console will ask the user for:
 
-- FullName
 - AddressLine1
 - City
 - State
 - Postal
 - Country
-- Email 
-- Phone
 
 And return information of the person such as:
 
@@ -29,6 +26,8 @@ And return information of the person such as:
 - City
 - CompanyName
 - EmailAddress
+- Latitude
+- Longitude
 - MelissaAddressKey (MAK)
 - MelissaAddressKeyBase
 - NameFull
@@ -40,8 +39,8 @@ And return information of the person such as:
 - State
 
 ## Tested Environments
-- Windows 10 64-bit .NET 7.0, Powershell 5.1
-- Ubuntu Linux 20.04.04 LTS 64-bit .NET 7.0
+- Windows 10 64-bit .NET 8.0, Powershell 5.1
+- Ubuntu Linux 20.04.04 LTS 64-bit .NET 8.0
 - Personator Consumer Cloud API Version 9.4.0.1333
 
 ## Getting Started
@@ -55,39 +54,34 @@ cd PersonatorConsumer-Dotnet
 
 ## Windows
 
-#### Install the Dotnet Core SDK
-Before starting, make sure that the .NET 7.0 SDK has been correctly installed on your machine (If you have Visual Studio installed, you most likely have it already). If you are unsure, you can check by opening a command prompt window and typing the following:
+#### Install .NET SDK
+Before starting, make sure that .NET SDK has been correctly installed on your machine (If you have Visual Studio installed, you most likely have it already). If you are unsure, you can check by opening a command prompt window and typing the following:
 
 `dotnet --list-sdks`
 
-If the .NET 7.0 SDK is already installed, you should see it in the following list:
+If .NET SDK is already installed, you should see it in the following list:
 
 ![alt text](/screenshots/dotnet_output.png)
 
-As long as the above list contains version `7.0.xxx` (underlined in red), then you can skip to the next step. If your list does not contain version 7.0, or you get any kind of error message, then you will need to download and install the .NET 7.0 SDK from the Microsoft website.
-
 To download, follow this link: https://dotnet.microsoft.com/en-us/download/dotnet
 
-Select `.NET 7.0` and you will be navigated to the download page.
+Select the desired .NET SDK version and you will be navigated to the download page.
 
 Click and download the `x64` SDK installer for your operating system.
 
 (IMPORTANT: Make sure you download the SDK, NOT the runtime. the SDK contains both the runtime as well as the tools needed to build the project.)
 
-![alt text](/screenshots/net7.png)
+![alt text](/screenshots/net.png)
 
 Once clicked, your web browser will begin downloading an installer for the SDK. Run the installer and follow all of the prompts to complete the installation (your computer may ask you to restart before you can continue). Once all of that is done, you should be able to verify that the SDK is installed with the `dotnet --list-sdks` command.
 
 #### Run Powershell Script
 Parameters:
-- -fullname: an input full name
 - -addressline1: an input address line 1
 - -city: an input city
 - -state: an input state
 - -postal: an input postal code
 - -country: an input country
-- -email: an input email
-- -phone: an input phone number
  	
   This is convenient when you want to get results for a specific request in one run instead of testing multiple records in interactive mode.  
 
@@ -104,10 +98,10 @@ There are two modes:
 
 - Command Line 
 
-	You can pass a full name, address line 1, city, state, postal code, country, email, phone, and license string into `-fullname`, `-addressline1`, `-city`, `-state`, `-postal`, `-country`, `-email`, `-phone`, and `-license` parameters respectively to test the Cloud API. For example: 
+	You can pass address line 1, city, state, postal code, country, and license string into `-addressline1`, `-city`, `-state`, `-postal`, `-country`, and `-license` parameters respectively to test the Cloud API. For example: 
 	```
-    .\PersonatorConsumerDotnet.ps1 -fullname "Ray Melissa" -addressline1 "22382 Avenida Empresa" -city "Rancho Santa Margarita" -state "CA" -postal "92688" -country "United States" -email "info@melissa.com" -phone "800-635-4772"
-    .\PersonatorConsumerDotnet.ps1 -fullname "Ray Melissa" -addressline1 "22382 Avenida Empresa" -city "Rancho Santa Margarita" -state "CA" -postal "92688" -country "United States" -email "info@melissa.com" -phone "800-635-4772" -license "<your_license_string>"
+    .\PersonatorConsumerDotnet.ps1 -addressline1 "22382 Avenida Empresa" -city "Rancho Santa Margarita" -state "CA" -postal "92688" -country "United States" 
+    .\PersonatorConsumerDotnet.ps1 -addressline1 "22382 Avenida Empresa" -city "Rancho Santa Margarita" -state "CA" -postal "92688" -country "United States" -license "<your_license_string>"
     ```
 	
 This is the expected output from a successful setup for interactive mode:
@@ -116,16 +110,14 @@ This is the expected output from a successful setup for interactive mode:
 
 ## Linux
 
-#### Install the Dotnet Core SDK
-Before starting, check to see if you already have the .NET 7.0 SDK already installed by entering this command:
+#### Install .NET SDK
+Before starting, check to see if you already have .NET SDK already installed by entering this command:
 
 `dotnet --list-sdks`
 
-If the .NET 7.0 SDK is already installed, you should see it in the following list:
+If .NET SDK is already installed, you should see it in the following list:
 
 ![alt text](/screenshots/dotnet_output2.png)
-
-As long as the above list contains version `7.0.xxx` (underlined in red), then you can skip to the next step. If your list does not contain version 7.0, or you get any kind of error message, then you will need to download and install the .NET 7.0 SDK.
 
 To download, run the following commands to add the Microsoft package signing key to your list of trusted keys and add the package repository.
 
@@ -135,25 +127,24 @@ sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 ```
 
-Next, you can now run this command to install the .NET 7.0 SDK:
+Next, you can now run this command to install .NET SDK:
 
 ```
 sudo apt-get update && \
-  sudo apt-get install -y dotnet-sdk-7.0
+  sudo apt-get install -y dotnet-sdk-[VERSION_NUMBER]
 ```
+
+Please replace [VERSION_NUMBER] with desired .NET SDK version.
 
 Once all of this is done, you should be able to verify that the SDK is installed with the `dotnet --list-sdks` command.
 
 #### Run Bash Script
 Parameters:
-- --fullname: an input full name
 - --addressline1: an input address line 1
 - --city: an input city
 - --state: an input state
 - --postal: an input postal code
 - --country: an input country
-- --email: an input email
-- --phone: an input phone number
 
   This is convenient when you want to get results for a specific request in one run instead of testing multiple records in interactive mode.  
 
@@ -170,10 +161,10 @@ There are two modes:
 
 - Command Line 
 
-	You can pass a full name, address line 1, city, state, postal code, country, email, phone, and license string into `--fullname`, `--addressline1`, `--city`, `--state`, `--postal`, `--country`, `--email`, `--phone`, and `--license` parameters respectively to test the Cloud API. For example: 
+	You can pass address line 1, city, state, postal code, country, and license string into `--addressline1`, `--city`, `--state`, `--postal`, `--country`, and `--license` parameters respectively to test the Cloud API. For example: 
 	```
-    ./PersonatorConsumerDotnet.sh --fullname "Ray Melissa" --addressline1 "22382 Avenida Empresa" --city "Rancho Santa Margarita" --state "CA" --postal "92688" --country "United States" --email "info@melissa.com" --phone "800-635-4772"
-    ./PersonatorConsumerDotnet.sh --fullname "Ray Melissa" --addressline1 "22382 Avenida Empresa" --city "Rancho Santa Margarita" --state "CA" --postal "92688" --country "United States" --email "info@melissa.com" --phone "800-635-4772" --license "<your_license_string>"
+    ./PersonatorConsumerDotnet.sh --addressline1 "22382 Avenida Empresa" --city "Rancho Santa Margarita" --state "CA" --postal "92688" --country "United States"
+    ./PersonatorConsumerDotnet.sh --addressline1 "22382 Avenida Empresa" --city "Rancho Santa Margarita" --state "CA" --postal "92688" --country "United States" --license "<your_license_string>"
     ```
 
 This is the expected output from a successful setup for interactive mode:

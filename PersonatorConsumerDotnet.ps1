@@ -3,14 +3,11 @@
 
 ######################### Parameters ##########################
 param(
-    $fullname = '', 
     $addressline1 = '', 
     $city = '', 
     $state = '', 
     $postal = '', 
     $country = '', 
-    $email = '', 
-    $phone = '',  
     $license = '', 
     [switch]$quiet = $false
     )
@@ -48,13 +45,13 @@ if ([string]::IsNullOrEmpty($license)) {
 # Build project
 Write-Host "`n================================= BUILD PROJECT ================================"
 
-dotnet publish -f="net7.0" -c Release -o $BuildPath PersonatorConsumerDotnet\PersonatorConsumerDotnet.csproj
+dotnet publish -f="net8.0" -c Release -o $BuildPath PersonatorConsumerDotnet\PersonatorConsumerDotnet.csproj
 
 # Run project
-if ([string]::IsNullOrEmpty($fullname) -and [string]::IsNullOrEmpty($addressline1) -and [string]::IsNullOrEmpty($city) -and [string]::IsNullOrEmpty($state) -and [string]::IsNullOrEmpty($postal) -and [string]::IsNullOrEmpty($country) -and [string]::IsNullOrEmpty($email) -and [string]::IsNullOrEmpty($phone)) {
+if ([string]::IsNullOrEmpty($addressline1) -and [string]::IsNullOrEmpty($city) -and [string]::IsNullOrEmpty($state) -and [string]::IsNullOrEmpty($postal) -and [string]::IsNullOrEmpty($country)) {
   echo $license
   dotnet $BuildPath\PersonatorConsumerDotnet.dll --license $license 
 }
 else {
-  dotnet $BuildPath\PersonatorConsumerDotnet.dll --license $license --fullname $fullname --addressline1 $addressline1 --city $city --state $state --postal $postal --country $country --email $email --phone $phone 
+  dotnet $BuildPath\PersonatorConsumerDotnet.dll --license $license --addressline1 $addressline1 --city $city --state $state --postal $postal --country $country 
 }

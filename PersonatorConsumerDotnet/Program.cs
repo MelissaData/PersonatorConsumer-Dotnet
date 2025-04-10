@@ -8,23 +8,20 @@ namespace PersonatorConsumerDotnet
     static void Main(string[] args)
     {
       string baseServiceUrl = @"https://personator.melissadata.net/";
-      string serviceEndpoint = @"v3/WEB/ContactVerify/doContactVerify"; //please see https://www.melissa.com/developer/personator for more endpoints
+      string serviceEndpoint = @"v3/WEB/ContactVerify/doContactVerify";
       string license = "";
-      string fullname = "";
       string addressline1 = "";
       string city = "";
       string state = "";
       string postal = "";
       string country = "";
-      string email = "";
-      string phone = "";
 
-      ParseArguments(ref license, ref fullname, ref addressline1, ref city, ref state, ref postal, ref country, ref email, ref phone, args);
-      CallAPI(baseServiceUrl, serviceEndpoint, license, fullname, addressline1, city, state, postal, country, email , phone);
+      ParseArguments(ref license, ref addressline1, ref city, ref state, ref postal, ref country, args);
+      CallAPI(baseServiceUrl, serviceEndpoint, license, addressline1, city, state, postal, country);
     }
 
-    static void ParseArguments(ref string license, ref string fullname, ref string addressline1, ref string city, ref string state, ref string postal,
-      ref string country, ref string email, ref string phone, string[] args)
+    static void ParseArguments(ref string license, ref string addressline1, ref string city, ref string state, ref string postal,
+      ref string country, string[] args)
     {
       for (int i = 0; i < args.Length; i++)
       {
@@ -33,13 +30,6 @@ namespace PersonatorConsumerDotnet
           if (args[i + 1] != null)
           {
             license = args[i + 1];
-          }
-        }
-        if (args[i].Equals("--fullname"))
-        {
-          if (args[i + 1] != null)
-          {
-            fullname = args[i + 1];
           }
         }
         if (args[i].Equals("--addressline1"))
@@ -77,20 +67,6 @@ namespace PersonatorConsumerDotnet
             country = args[i + 1];
           }
         }
-        if (args[i].Equals("--email"))
-        {
-          if (args[i + 1] != null)
-          {
-            email = args[i + 1];
-          }
-        }
-        if (args[i].Equals("--phone"))
-        {
-          if (args[i + 1] != null)
-          {
-            phone = args[i + 1];
-          }
-        }
       }
     }
 
@@ -107,7 +83,7 @@ namespace PersonatorConsumerDotnet
 
       // Print output
       Console.WriteLine("\n==================================== OUTPUT ====================================\n");
-      
+
       Console.WriteLine("API Call: ");
       string APICall = Path.Combine(baseServiceUrl, requestQuery);
       for (int i = 0; i < APICall.Length; i += 70)
@@ -125,31 +101,25 @@ namespace PersonatorConsumerDotnet
       Console.WriteLine("\nAPI Response:");
       Console.WriteLine(prettyResponse);
     }
-    
-    static void CallAPI(string baseServiceUrl, string serviceEndPoint, string license, string fullname, string addressline1, string city, string state, string postal, string country,
-      string email, string phone)
+
+    static void CallAPI(string baseServiceUrl, string serviceEndPoint, string license, string addressline1, string city, string state, string postal, string country)
     {
       Console.WriteLine("\n=============== WELCOME TO MELISSA PERSONATOR CONSUMER CLOUD API ===============\n");
-      
+
       bool shouldContinueRunning = true;
       while (shouldContinueRunning)
       {
-        string inputFullName = "";
         string inputAddressLine1 = "";
         string inputCity = "";
         string inputState = "";
         string inputPostal = "";
         string inputCountry = "";
-        string inputEmail = "";
-        string inputPhone = "";
 
-        if (string.IsNullOrEmpty(fullname) && string.IsNullOrEmpty(addressline1) && string.IsNullOrEmpty(city) && string.IsNullOrEmpty(state) && string.IsNullOrEmpty(postal)
-          && string.IsNullOrEmpty(country) && string.IsNullOrEmpty(email) && string.IsNullOrEmpty(phone))
+
+        if (string.IsNullOrEmpty(addressline1) && string.IsNullOrEmpty(city) && string.IsNullOrEmpty(state) && string.IsNullOrEmpty(postal)
+          && string.IsNullOrEmpty(country))
         {
           Console.WriteLine("\nFill in each value to see results");
-
-          Console.Write("FullName: ");
-          inputFullName = Console.ReadLine();
 
           Console.Write("AddressLine1: ");
           inputAddressLine1 = Console.ReadLine();
@@ -166,34 +136,22 @@ namespace PersonatorConsumerDotnet
           Console.Write("Country: ");
           inputCountry = Console.ReadLine();
 
-          Console.Write("Email: ");
-          inputEmail = Console.ReadLine();
-
-          Console.Write("Phone: ");
-          inputPhone = Console.ReadLine();
         }
         else
         {
-          inputFullName = fullname;
           inputAddressLine1 = addressline1;
           inputCity = city;
           inputState = state;
           inputPostal = postal;
           inputCountry = country;
-          inputEmail = email;
-          inputPhone = phone;
+
         }
 
-        while (string.IsNullOrEmpty(inputFullName) || string.IsNullOrEmpty(inputAddressLine1) || string.IsNullOrEmpty(inputCity) || string.IsNullOrEmpty(inputState) || string.IsNullOrEmpty(inputPostal)
-          || string.IsNullOrEmpty(inputCountry) || string.IsNullOrEmpty(inputEmail) || string.IsNullOrEmpty(inputPhone))
+        while (string.IsNullOrEmpty(inputAddressLine1) || string.IsNullOrEmpty(inputCity) || string.IsNullOrEmpty(inputState) || string.IsNullOrEmpty(inputPostal)
+          || string.IsNullOrEmpty(inputCountry))
         {
           Console.WriteLine("\nFill in missing required parameter");
 
-          if (string.IsNullOrEmpty(inputFullName))
-          {
-            Console.Write("FullName: ");
-            inputFullName = Console.ReadLine();
-          }
 
           if (string.IsNullOrEmpty(inputAddressLine1))
           {
@@ -224,44 +182,28 @@ namespace PersonatorConsumerDotnet
             Console.Write("Country: ");
             inputCountry = Console.ReadLine();
           }
-
-          if (string.IsNullOrEmpty(inputEmail))
-          {
-            Console.Write("Email: ");
-            inputEmail = Console.ReadLine();
-          }
-
-          if (string.IsNullOrEmpty(inputPhone))
-          {
-            Console.Write("Phone: ");
-            inputPhone = Console.ReadLine();
-          }
         }
 
         Dictionary<string, string> inputs = new Dictionary<string, string>()
         {
             { "format", "json"},
-            { "full", inputFullName},
+            { "cols", "GrpGeocode"},
+            { "act", "Check"},
             { "a1", inputAddressLine1},
             { "city", inputCity},
             { "state", inputState},
             { "postal", inputPostal},
             { "ctry", inputCountry},
-            { "email", inputEmail},
-            { "phone", inputPhone}       
         };
 
-        Console.WriteLine("\n===================================== INPUTS ===================================\n");
+        Console.WriteLine("\n==================================== INPUTS ====================================\n");
         Console.WriteLine($"\t   Base Service Url: {baseServiceUrl}");
         Console.WriteLine($"\t  Service End Point: {serviceEndPoint}");
-        Console.WriteLine($"\t           FullName: {inputFullName}");
         Console.WriteLine($"\t     Address Line 1: {inputAddressLine1}");
         Console.WriteLine($"\t               City: {inputCity}");
         Console.WriteLine($"\t              State: {inputState}");
         Console.WriteLine($"\t         PostalCode: {inputPostal}");
         Console.WriteLine($"\t            Country: {inputCountry}");
-        Console.WriteLine($"\t              Email: {inputEmail}");
-        Console.WriteLine($"\t              Phone: {inputPhone}");
 
         // Create Service Call
         // Set the License String in the Request
@@ -297,7 +239,7 @@ namespace PersonatorConsumerDotnet
         } while ((success != true) && (retryCounter < 5));
 
         bool isValid = false;
-        if (!string.IsNullOrEmpty(fullname + addressline1 + city + state + postal + country + email + phone))
+        if (!string.IsNullOrEmpty(addressline1 + city + state + postal + country))
         {
           isValid = true;
           shouldContinueRunning = false;
@@ -327,7 +269,7 @@ namespace PersonatorConsumerDotnet
           }
         }
       }
-      
+
       Console.WriteLine("\n===================== THANK YOU FOR USING MELISSA CLOUD API ====================\n");
     }
   }
