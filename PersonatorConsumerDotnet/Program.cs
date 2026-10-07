@@ -3,12 +3,40 @@ using System.Security.Cryptography;
 
 namespace PersonatorConsumerDotnet
 {
+  /// <summary>
+  /// Personator Consumer verifies, standardizes, and enriches consumer contact data. In this
+  /// sample it checks an address (with the geocode column group requested) and returns the
+  /// verified record along with result codes that describe the quality of the match.
+  ///
+  /// <para>High-level flow of this sample:</para>
+  /// <list type="number">
+  ///   <item><description>ARGS    - ParseArguments reads any --flag values off the command line.</description></item>
+  ///   <item><description>INPUT   - CallAPI fills in whatever wasn't supplied via interactive prompts.</description></item>
+  ///   <item><description>REQUEST - CallAPI builds the REST query string (license + fixed options + input fields).</description></item>
+  ///   <item><description>CALL    - GetContents issues the GET request and pretty-prints the JSON response.</description></item>
+  /// </list>
+  ///
+  /// <para>This sample is a thin HTTP client: it builds a query string, sends a GET
+  /// request to the Personator Consumer Cloud API, and prints the JSON response.</para>
+  ///
+  /// <para>Reference:</para>
+  /// <list type="bullet">
+  ///   <item><description>Documentation: https://docs.melissa.com/cloud-api/personator-consumer/personator-consumer-index.html</description></item>
+  ///   <item><description>Release notes: https://releasenotes.melissa.com/cloud-api/personator-consumer/</description></item>
+  ///   <item><description>Result codes: https://docs.melissa.com/melissa/result-codes/result-codes-index.html</description></item>
+  /// </list>
+  /// </summary>
   static class Program
   {
+    /// <summary>
+    /// Entry point. Reads the optional command-line arguments, then hands control to
+    /// CallAPI, which performs the actual request/response cycle.
+    /// </summary>
+    /// <param name="args">The raw command-line arguments.</param>
     static void Main(string[] args)
     {
       string baseServiceUrl = @"https://personator.melissadata.net/";
-      string serviceEndpoint = @"v3/WEB/ContactVerify/doContactVerify";
+      string serviceEndpoint = @"v3/WEB/ContactVerify/doContactVerify"; //please see https://www.melissa.com/developer/personator for more endpoints
       string license = "";
       string addressline1 = "";
       string city = "";
@@ -16,10 +44,26 @@ namespace PersonatorConsumerDotnet
       string postal = "";
       string country = "";
 
+      // Populate any values passed on the command line, then run the lookup.
       ParseArguments(ref license, ref addressline1, ref city, ref state, ref postal, ref country, args);
       CallAPI(baseServiceUrl, serviceEndpoint, license, addressline1, city, state, postal, country);
     }
 
+    /// <summary>
+    /// Reads the supported command-line options and writes each recognized value into
+    /// its matching by-ref parameter. Any parameter left unset here falls back to an
+    /// interactive prompt later in <see cref="CallAPI"/>.
+    ///
+    /// <para>Recognized flags (each followed by its value, e.g. "--city Rancho Santa Margarita"):
+    /// --license/-l, --addressline1, --city, --state, --postal, --country.</para>
+    /// </summary>
+    /// <param name="license">Receives the Melissa license string, if supplied.</param>
+    /// <param name="addressline1">Receives the street address to verify, if supplied.</param>
+    /// <param name="city">Receives the city to verify, if supplied.</param>
+    /// <param name="state">Receives the state to verify, if supplied.</param>
+    /// <param name="postal">Receives the postal code to verify, if supplied.</param>
+    /// <param name="country">Receives the country to verify, if supplied.</param>
+    /// <param name="args">The raw command-line arguments to parse.</param>
     static void ParseArguments(ref string license, ref string addressline1, ref string city, ref string state, ref string postal,
       ref string country, string[] args)
     {
@@ -70,6 +114,12 @@ namespace PersonatorConsumerDotnet
       }
     }
 
+    /// <summary>
+    /// Issues the GET request against the Personator Consumer endpoint and
+    /// pretty-prints the API call and the JSON response to the console.
+    /// </summary>
+    /// <param name="baseServiceUrl">The Personator Consumer Cloud API base URL.</param>
+    /// <param name="requestQuery">The endpoint path plus query string built by <see cref="CallAPI"/>.</param>
     public static async Task GetContents(string baseServiceUrl, string requestQuery)
     {
       HttpClient client = new HttpClient();
@@ -78,12 +128,13 @@ namespace PersonatorConsumerDotnet
 
       string text = await response.Content.ReadAsStringAsync();
 
+      // Re-serialize with indentation so the raw response is easier to read.
       var obj = JsonConvert.DeserializeObject(text);
       var prettyResponse = JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
 
       // Print output
       Console.WriteLine("\n==================================== OUTPUT ====================================\n");
-
+      
       Console.WriteLine("API Call: ");
       string APICall = Path.Combine(baseServiceUrl, requestQuery);
       for (int i = 0; i < APICall.Length; i += 70)
@@ -101,11 +152,27 @@ namespace PersonatorConsumerDotnet
       Console.WriteLine("\nAPI Response:");
       Console.WriteLine(prettyResponse);
     }
-
+    
+    /// <summary>
+    /// Drives the interactive/CLI loop: gathers the required address fields, builds and
+    /// submits the REST query, prints the result, and optionally repeats for another record.
+    ///
+    /// <para>In interactive mode (no address args) it loops, asking for a new record each pass
+    /// until the user answers "N". In one-shot mode (address args supplied) it runs a single
+    /// pass and exits.</para>
+    /// </summary>
+    /// <param name="baseServiceUrl">The Personator Consumer Cloud API base URL.</param>
+    /// <param name="serviceEndPoint">The specific Personator Consumer endpoint path to call.</param>
+    /// <param name="license">The Melissa license string sent with every request.</param>
+    /// <param name="addressline1">A street address to verify in one-shot mode; if all address fields are empty, the program prompts interactively.</param>
+    /// <param name="city">A city to verify in one-shot mode.</param>
+    /// <param name="state">A state to verify in one-shot mode.</param>
+    /// <param name="postal">A postal code to verify in one-shot mode.</param>
+    /// <param name="country">A country to verify in one-shot mode.</param>
     static void CallAPI(string baseServiceUrl, string serviceEndPoint, string license, string addressline1, string city, string state, string postal, string country)
     {
       Console.WriteLine("\n=============== WELCOME TO MELISSA PERSONATOR CONSUMER CLOUD API ===============\n");
-
+      
       bool shouldContinueRunning = true;
       while (shouldContinueRunning)
       {
@@ -116,6 +183,7 @@ namespace PersonatorConsumerDotnet
         string inputCountry = "";
 
 
+        // No values were supplied via command line, so prompt for every field.
         if (string.IsNullOrEmpty(addressline1) && string.IsNullOrEmpty(city) && string.IsNullOrEmpty(state) && string.IsNullOrEmpty(postal)
           && string.IsNullOrEmpty(country))
         {
@@ -139,6 +207,7 @@ namespace PersonatorConsumerDotnet
         }
         else
         {
+          // At least one field was supplied via command line; use those values as-is.
           inputAddressLine1 = addressline1;
           inputCity = city;
           inputState = state;
@@ -147,6 +216,7 @@ namespace PersonatorConsumerDotnet
 
         }
 
+        // Prompt individually for any still-missing required field.
         while (string.IsNullOrEmpty(inputAddressLine1) || string.IsNullOrEmpty(inputCity) || string.IsNullOrEmpty(inputState) || string.IsNullOrEmpty(inputPostal)
           || string.IsNullOrEmpty(inputCountry))
         {
@@ -184,6 +254,9 @@ namespace PersonatorConsumerDotnet
           }
         }
 
+        // Map input fields to the API's expected query parameter names. Also hard-codes
+        // format=json (JSON response), cols=GrpGeocode (request the geocode column group),
+        // and act=Check (the action to perform).
         Dictionary<string, string> inputs = new Dictionary<string, string>()
         {
             { "format", "json"},
@@ -193,7 +266,7 @@ namespace PersonatorConsumerDotnet
             { "city", inputCity},
             { "state", inputState},
             { "postal", inputPostal},
-            { "ctry", inputCountry},
+            { "ctry", inputCountry},      
         };
 
         Console.WriteLine("\n==================================== INPUTS ====================================\n");
@@ -238,6 +311,8 @@ namespace PersonatorConsumerDotnet
           }
         } while ((success != true) && (retryCounter < 5));
 
+        // If any address field came from the command line, treat this as a one-shot
+        // run rather than looping for additional records.
         bool isValid = false;
         if (!string.IsNullOrEmpty(addressline1 + city + state + postal + country))
         {
@@ -245,6 +320,8 @@ namespace PersonatorConsumerDotnet
           shouldContinueRunning = false;
         }
 
+        // Otherwise ask whether to test another record. Keep prompting until we get a
+        // valid Y/N. "N" ends the program; "Y" falls through to another pass.
         while (!isValid)
         {
           Console.WriteLine("\nTest another record? (Y/N)");
@@ -269,7 +346,7 @@ namespace PersonatorConsumerDotnet
           }
         }
       }
-
+      
       Console.WriteLine("\n===================== THANK YOU FOR USING MELISSA CLOUD API ====================\n");
     }
   }
